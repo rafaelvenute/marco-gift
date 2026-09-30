@@ -1,30 +1,39 @@
 # Per Marco
 
-Una sorpresa interattiva in HTML, CSS e JavaScript vanilla, senza dipendenze.
+Una piccola sorpresa interattiva in HTML, CSS e JavaScript vanilla, senza framework.
 
-## Aprire la pagina
+- Sito: https://rafaelvenute.github.io/marco-gift/
+- Repository: https://github.com/rafaelvenute/marco-gift
+- GitHub Pages: branch `main`, cartella `/ (root)`, HTTPS attivo.
 
-Apri `index.html` direttamente nel browser oppure avvia `node preview.cjs` e visita http://127.0.0.1:4173.
+## Formulario
 
-Per condividerla online, carica `index.html`, `style.css`, `script.js` e la cartella `assets/` su un hosting statico. `preview.cjs` e questo documento non sono necessari sul sito.
+Formspree Free, form **Marco Nintendo Gift**. L'indirizzo del destinatario è gestito dal pannello Formspree e non è inserito nel frontend.
 
-## Attivare il formulario
+Il form invia soltanto:
 
-In `script.js`, sostituisci `INSERIRE_ENDPOINT_FORMSPREE` con il tuo endpoint reale. Finché manca, non vengono inviate e-mail e non appare una falsa conferma. `LEVEL COMPLETE` viene mostrato solo dopo una risposta HTTP positiva. Gli errori di rete permettono di riprovare.
+- `email_nintendo`: l'e-mail inserita da Marco;
+- `_source`: `Marco Nintendo Gift`;
+- `_subject`: `Nintendo Gift — Email Marco`.
 
-## Asset e animazione
+Invio AJAX senza redirect, validazione email, protezione dai doppi invii, stato di caricamento, timeout e possibilità di riprovare. LEVEL COMPLETE appare soltanto dopo una risposta positiva di Formspree.
 
-- Mario: nuove pose dal JPEG `mario-poses.jpeg`, mostrate tramite finestre CSS senza ridisegnare il personaggio. Logo Nintendo: immagine originale fornita.
-- Musica: `super_mario.mp3`, volume 12%.
-- Salto: `maro-jump-sound-effect_1.mp3`.
-- Colpo: `super-mario-bros.mp3` (audio fornito, non identificato come HIT dedicato).
-- Moneta: `super-mario-coin-sound.mp3`.
-- Corsa: alternanza di tre pose ogni 105 ms, con rallentamento finale. Salto: pose con braccio alzato; atterraggio: posa a terra e breve compressione. Blocco, moneta, nuvole e colline sono elementi CSS.
-- Pulsanti: pressione elastica e suono della moneta; JUMP usa il suono del salto. Mute silenzia anche i pulsanti.
-- Reveal: stella rossa a schermo intero, poi ingresso progressivo del titolo, della carta regalo e del formulario.
+## QR per il biglietto
 
-La corsa dura 2 secondi e il salto 740 ms. La transizione al regalo comincia 680 ms dopo il colpo. Il salto anticipato viene memorizzato e parte nella zona del blocco. Mario aspetta se nessuno preme JUMP. Non esiste una condizione di fallimento.
+- `qr-marco-gift-nintendo.png`: 2200 × 2200 px, cornice rossa, moduli arrotondati e moneta centrale.
+- `qr-marco-gift-nintendo.svg`: versione vettoriale.
+- `qr-marco-gift-safe.png`: versione semplice di backup.
 
-## Verifica effettuata
+Tutti puntano esattamente al sito pubblico sopra indicato. Correzione errori H e quiet zone di quattro moduli. Decodificati con successo il PNG originale, l'SVG renderizzato indipendentemente, i ridimensionamenti a 4 cm e 5 cm a 300 dpi e una versione piccola con lieve sfocatura. I test di stampa sono simulazioni digitali, non prove su carta.
 
-La pagina è stata aperta realmente nel browser a 390 × 844 e su desktop. Verificati START, caricamento/riproduzione dei quattro audio, mute, corsa, salto anticipato e tardivo, barra spaziatrice, blocco, animazione della moneta, reveal, assenza di overflow orizzontale e gestione del formulario senza endpoint. Non è stato effettuato un invio reale: manca l’endpoint Formspree. Il sito è una consegna locale, non pubblicata.
+Stampare il QR completo di cornice e margini, senza ritagliare la zona bianca, a 4–5 cm per lato.
+
+## Verifiche
+
+Eseguiti un invio reale locale e un invio reale dalla pagina GitHub Pages: entrambe le submission sono presenti su Formspree, con tutti i campi richiesti. Confermata anche la ricezione delle notifiche e-mail. Nessun indirizzo di test è incorporato nel sito.
+
+Verificati su viewport 390 × 844: START, audio, corsa, salto anticipato, blocco, moneta, transizione, formulario e LEVEL COMPLETE. Controllati i nomi dei file case-sensitive, i path relativi e gli errori JavaScript. Il design approvato è preservato.
+
+## Anteprima locale
+
+Aprire `index.html` nel browser oppure eseguire `node preview.cjs` e visitare http://127.0.0.1:4173/. L'invio reale del form usa l'endpoint pubblico Formspree.
