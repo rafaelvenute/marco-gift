@@ -5,7 +5,7 @@ const music = $('music');
 const effects = [$('jump-audio'), $('hit-audio'), $('coin-audio')];
 const buttonAudio = $('button-audio');
 buttonAudio.volume = 0.28;
-music.volume = 0.12;
+music.volume = 0.28;
 effects.forEach(audio => { audio.volume = 0.65; });
 let started = false, jumping = false, hit = false, muted = false;
 let startTime = 0, position = 0, queuedJump = false;
@@ -31,15 +31,43 @@ function layoutWorld() {
   world.style.setProperty('--coin-rise', `${coinRise}px`);
   world.style.setProperty('--sparkles-bottom', `${Math.min(coinBottom, world.clientHeight - 70 * scale - 16)}px`);
 }
-// Keep one continuous music track across intro, game, gift and confirmation.
+// Use the same media element from intro through the confirmation.
+const audioControls = document.querySelectorAll('[data-audio-toggle]');
+function syncAudioControls() {
+  const playing = !music.paused && !music.muted && !muted;
+  audioControls.forEach(button => {
+    button.textContent = playing ? '♫' : '♪';
+    button.setAttribute('aria-label', playing ? 'Disattiva musica' : 'Attiva musica');
+    button.setAttribute('aria-pressed', String(playing));
+  });
+  $('audio-hint').textContent = playing ? 'TOCCA PER COMINCIARE · MUSICA ATTIVA' : 'TOCCA ♫ PER ATTIVARE LA MUSICA';
+}
 function startMusic() {
   if (muted || document.hidden) return;
-  music.play().then(() => { musicStarted = true; }).catch(() => {});
+  music.play().then(() => {
+    musicStarted = true;
+    syncAudioControls();
+  }).catch(syncAudioControls);
 }
-// Autoplay may be blocked; the first touch/key unlocks it without resetting it.
+// On touch browsers, activation happens on click/touchend, not pointerdown.
+// Keep retrying on real gestures if the initial autoplay request was blocked.
+document.addEventListener('click', () => { if (music.paused) startMusic(); });
+document.addEventListener('touchend', () => { if (music.paused) startMusic(); }, { passive: true });
+document.addEventListener('keydown', () => { if (music.paused) startMusic(); });
+music.addEventListener('play', syncAudioControls);
+music.addEventListener('pause', () => {
+  syncAudioControls();
+  if (musicStarted && !muted && !document.hidden) startMusic();
+});
+music.addEventListener('ended', () => { if (musicStarted) startMusic(); });
+audioControls.forEach(button => button.addEventListener('click', () => {
+  muted = !music.paused && !music.muted && !muted;
+  [music, ...effects, buttonAudio].forEach(audio => { audio.muted = muted; });
+  if (muted) music.pause();
+  else startMusic();
+  syncAudioControls();
+}));
 startMusic();
-document.addEventListener('pointerdown', startMusic, { once: true });
-document.addEventListener('keydown', startMusic, { once: true });
 
 function targetX() { return $('world').clientWidth * 0.65 - $('runner').offsetWidth / 2; }
 function pose(name) {
@@ -144,6 +172,7 @@ function hitBlock() {
     setTimeout(() => {
       $('scene').hidden = true;
       $('gift').hidden = false;
+      startMusic();
       document.body.classList.add('revealed');
       $('gift-title').setAttribute('tabindex', '-1');
       $('gift-title').focus({ preventScroll: true });
@@ -157,14 +186,6 @@ document.addEventListener('keydown', event => {
   if (event.code === 'Space' && !$('scene').hidden) {
     event.preventDefault(); requestJump();
   }
-});
-$('mute').addEventListener('click', () => {
-  muted = !muted;
-  [music, ...effects, buttonAudio].forEach(audio => { audio.muted = muted; });
-  if (!muted) startMusic();
-  $('mute').textContent = muted ? '×' : '♫';
-  $('mute').setAttribute('aria-label', muted ? 'Attiva audio' : 'Disattiva audio');
-  $('mute').setAttribute('aria-pressed', String(muted));
 });
 document.querySelectorAll('button').forEach(button => {
   button.addEventListener('click', () => {
@@ -209,6 +230,7 @@ $('gift-form').addEventListener('submit', async event => {
     $('form-section').hidden = true;
     status.textContent = '';
     $('complete').showModal();
+    startMusic();
   } catch {
     status.textContent = 'Qualcosa non ha funzionato. Riprova.';
   } finally {

@@ -103,3 +103,6 @@ button.pressed{animation:button-press .36s ease-out!important}
 .world .running .sprite{animation:whole-stride .44s ease-in-out infinite}
 @keyframes whole-stride{0%,50%,100%{transform:scale(var(--actor-scale)) rotate(-2deg)}25%,75%{transform:scale(var(--actor-scale)) rotate(2deg)}}
 @media(prefers-reduced-motion:reduce){.world .running .sprite{animation:none!important}}
+
+.header-tools{display:flex;align-items:center;gap:12px}
+.complete .modal-audio{position:absolute;top:10px;left:10px;width:32px;height:32px}

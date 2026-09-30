@@ -7,21 +7,21 @@
   <meta name="description" content="Una piccola sorpresa, un salto e un regalo. Per Marco.">
   <title>Per Marco · Una piccola sorpresa</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ed2330'/%3E%3Ctext x='16' y='24' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='24' fill='white'%3E%3F%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css?v=20260930-whole-frames">
-  <script src="script.js?v=20260930-continuous-music" defer></script>
+  <link rel="stylesheet" href="style.css?v=20260930-audio-controls">
+  <script src="script.js?v=20260930-audio-controls" defer></script>
 </head>
 <body>
   <main>
     <section id="intro" class="intro screen" aria-labelledby="intro-title">
-      <header><span class="tiny">UNA PICCOLA SORPRESA</span></header>
+      <header><span class="tiny">UNA PICCOLA SORPRESA</span><button id="intro-audio" class="sound" data-audio-toggle aria-label="Attiva musica" aria-pressed="false">♫</button></header>
       <div class="intro-copy"><p class="eyebrow">GAMING MODE</p><h1 id="intro-title">EHI, MARCO!<br><span>UN REGALO<br><span class="keep-together">PER TE.</span></span></h1><p>DA RAFAEL!</p></div>
       <div class="intro-art"><span class="orbit-star star-one" aria-hidden="true">✦</span><span class="orbit-star star-two" aria-hidden="true">✧</span><div class="intro-mario" role="img" aria-label="Mario è pronto per la tua sorpresa"><div class="sprite pose-celebrate"></div></div><span class="art-shadow"></span></div>
-      <div class="intro-bottom"><button id="start" class="primary">START <span aria-hidden="true">↗</span></button><p class="tiny">TOCCA PER COMINCIARE · AUDIO ON</p></div>
+      <div class="intro-bottom"><button id="start" class="primary">START <span aria-hidden="true">↗</span></button><p id="audio-hint" class="tiny" aria-live="polite">TOCCA ♫ PER ATTIVARE LA MUSICA</p></div>
       <footer class="tiny">FATTO CON AFFETTO <span>+ UN PO’ DI MAGIA</span></footer>
     </section>
 
     <section id="scene" class="scene screen" hidden aria-label="Salta e scopri il regalo">
-      <header><span class="tiny">PER MARCO <span class="red">♥</span></span><button id="mute" class="sound" aria-label="Disattiva audio" aria-pressed="false">♫</button></header>
+      <header><span class="tiny">PER MARCO <span class="red">♥</span></span><button id="mute" class="sound" data-audio-toggle aria-label="Attiva musica" aria-pressed="false">♫</button></header>
       <div class="scene-copy"><p class="eyebrow">GAMING MODE</p><h2>UN SALTO.<br><span>UNA SORPRESA.</span></h2><p id="hint" aria-live="polite">Il regalo è lì. Premi JUMP!</p></div>
       <div id="world" class="world" aria-hidden="true">
         <div class="cloud cloud-one"></div><div class="cloud cloud-two"></div>
@@ -35,7 +35,7 @@
     </section>
 
     <section id="gift" class="gift screen" hidden aria-labelledby="gift-title">
-      <header><span class="tiny">SORPRESA SBLOCCATA <span class="red">✦</span></span><span class="tiny">PER MARCO</span></header>
+      <header><span class="tiny">SORPRESA SBLOCCATA <span class="red">✦</span></span><span class="header-tools"><span class="tiny">PER MARCO</span><button id="gift-audio" class="sound" data-audio-toggle aria-label="Attiva musica" aria-pressed="false">♫</button></span></header>
       <div class="gift-heading"><p class="eyebrow">QUESTO È PER TE.</p><h2 id="gift-title">ADESSO<br><span>SI GIOCA!</span></h2><p>Le cose belle sono ancora più belle insieme.</p></div>
       <div class="gift-card"><div class="logo-crop"><img src="assets/logo-nintendo-oggi.png" alt="Nintendo"></div><div class="card-body"><span class="switch-icon" aria-hidden="true"><i></i><i></i></span><div><p>NINTENDO SWITCH ONLINE</p><strong>FAMILY</strong></div><span class="card-star" aria-hidden="true">✦</span></div><div class="card-footer tiny">IL TUO POSTO NEL GRUPPO FAMIGLIA <span>♥</span></div></div>
       <div id="form-section" class="form-section"><h3>CI SIAMO QUASI!</h3><p>Lasciami l’e-mail associata al tuo Account Nintendo, così posso aggiungerti al gruppo famiglia.</p>
@@ -46,6 +46,7 @@
     </section>
   </main>
   <dialog id="complete" class="complete" aria-labelledby="complete-title" aria-describedby="complete-message">
+    <button id="complete-audio" class="sound modal-audio" data-audio-toggle aria-label="Attiva musica" aria-pressed="false">♫</button>
     <button id="close-complete" class="sound modal-close" aria-label="Chiudi conferma">×</button>
     <span aria-hidden="true">✦</span><p class="eyebrow">LEVEL COMPLETE</p>
     <h3 id="complete-title">Perfetto, Marco!</h3>
