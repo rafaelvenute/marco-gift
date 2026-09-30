@@ -99,12 +99,7 @@ button.pressed{animation:button-press .36s ease-out!important}
 @keyframes land{0%{transform:scale(calc(1.07 * var(--actor-scale)),calc(.91 * var(--actor-scale)))}60%{transform:scale(calc(.98 * var(--actor-scale)),calc(1.025 * var(--actor-scale)))}100%{transform:scale(var(--actor-scale))}}
 
 .keep-together{white-space:nowrap}
-.walk-part{display:none}
-.world .running .sprite{background-image:none}
-.running .walk-part{display:block;position:absolute;inset:0;background-image:url('assets/mario-poses.jpeg');background-size:inherit;background-position:inherit;background-repeat:no-repeat;will-change:transform}
-.walk-body{clip-path:polygon(0 0,100% 0,100% 72%,72% 72%,50% 67%,28% 72%,0 72%);z-index:2;transform-origin:50% 65%}
-.walk-back{clip-path:polygon(0 69%,48% 64%,57% 79%,49% 100%,0 100%);transform-origin:40% 70%;animation:walk-back .42s ease-in-out infinite}
-.walk-front{clip-path:polygon(48% 64%,100% 69%,100% 100%,49% 100%,57% 79%);transform-origin:67% 70%;animation:walk-front .42s ease-in-out infinite}
-@keyframes walk-back{0%,100%{transform:rotate(-18deg) translateY(-1px)}50%{transform:rotate(18deg) translateY(1px)}}
-@keyframes walk-front{0%,100%{transform:rotate(18deg) translateY(1px)}50%{transform:rotate(-18deg) translateY(-1px)}}
-@media(prefers-reduced-motion:reduce){.running .walk-part{animation:none!important}}
+/* Animate the complete frame: no masks or separated body parts. */
+.world .running .sprite{animation:whole-stride .44s ease-in-out infinite}
+@keyframes whole-stride{0%,50%,100%{transform:scale(var(--actor-scale)) rotate(-2deg)}25%,75%{transform:scale(var(--actor-scale)) rotate(2deg)}}
+@media(prefers-reduced-motion:reduce){.world .running .sprite{animation:none!important}}

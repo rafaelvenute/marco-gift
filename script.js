@@ -66,11 +66,13 @@ function run(now) {
   if (jumping || hit) return;
   const progress = Math.min((now - startTime) / 2000, 1);
   const travel = progress < 0.8 ? progress / 0.9 : 1 - Math.pow((1 - progress) / 0.2, 2) / 9;
-  // The supplied running poses have almost identical legs: articulate each
-  // leg separately instead of cycling between near-identical silhouettes.
-  pose('run-one');
-  const stride = (now - startTime) / 420 * Math.PI * 2;
-  move(12 + (targetX() - 12) * travel, Math.abs(Math.sin(stride)) * 2.5);
+  // Use complete source frames, including the feet-together contact pose.
+  // Keeping the whole silhouette avoids gaps between animated body parts.
+  const elapsed = now - startTime;
+  const step = Math.floor(elapsed / 110) % 4;
+  pose(['run-three', 'land', 'run-one', 'land'][step]);
+  const stride = elapsed / 440 * Math.PI * 2;
+  move(12 + (targetX() - 12) * travel, Math.abs(Math.sin(stride)) * 3);
   // An early tap is buffered until the last part of the approach.
   if (queuedJump && progress >= 0.72) { jump(); return; }
   if (progress < 1) requestAnimationFrame(run);
