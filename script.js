@@ -31,7 +31,10 @@ function layoutWorld() {
   world.style.setProperty('--sparkles-bottom', `${Math.min(coinBottom, world.clientHeight - 70 * scale - 16)}px`);
 }
 function targetX() { return $('world').clientWidth * 0.65 - $('runner').offsetWidth / 2; }
-function pose(name) { $('sprite').className = `sprite pose-${name}`; }
+function pose(name) {
+  const next = `sprite pose-${name}`;
+  if ($('sprite').className !== next) $('sprite').className = next;
+}
 function move(x, y = 0) {
   position = x;
   $('runner').style.transform = `translate(${x}px, ${-y}px)`;
@@ -63,9 +66,11 @@ function run(now) {
   if (jumping || hit) return;
   const progress = Math.min((now - startTime) / 2000, 1);
   const travel = progress < 0.8 ? progress / 0.9 : 1 - Math.pow((1 - progress) / 0.2, 2) / 9;
-  const step = Math.floor((now - startTime) / (progress > 0.85 ? 150 : 105)) % 4;
-  pose(['run-one', 'run-two', 'run-three', 'run-two'][step]);
-  move(12 + (targetX() - 12) * travel, step % 2 ? 1.5 : 0);
+  // The supplied running poses have almost identical legs: articulate each
+  // leg separately instead of cycling between near-identical silhouettes.
+  pose('run-one');
+  const stride = (now - startTime) / 420 * Math.PI * 2;
+  move(12 + (targetX() - 12) * travel, Math.abs(Math.sin(stride)) * 2.5);
   // An early tap is buffered until the last part of the approach.
   if (queuedJump && progress >= 0.72) { jump(); return; }
   if (progress < 1) requestAnimationFrame(run);
