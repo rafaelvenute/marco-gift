@@ -16,7 +16,21 @@ function play(audio) {
   audio.play().catch(() => {});
 }
 
-function targetX() { return $('world').clientWidth * 0.65 - 50; }
+// Fit the full coin arc and sparkles within the available world height.
+function layoutWorld() {
+  const world = $('world');
+  if (!world.clientHeight) return;
+  const scale = Math.min(1, (world.clientHeight - 24) / 300);
+  const blockBottom = Math.min(215 * scale, world.clientHeight - 24 - 120 * scale);
+  const coinBottom = blockBottom + 58 * scale;
+  const coinRise = Math.min(65 * scale, world.clientHeight - 16 - coinBottom - 34 * scale);
+  world.style.setProperty('--actor-scale', scale);
+  world.style.setProperty('--block-bottom', `${blockBottom}px`);
+  world.style.setProperty('--coin-bottom', `${coinBottom}px`);
+  world.style.setProperty('--coin-rise', `${coinRise}px`);
+  world.style.setProperty('--sparkles-bottom', `${Math.min(coinBottom, world.clientHeight - 70 * scale - 16)}px`);
+}
+function targetX() { return $('world').clientWidth * 0.65 - $('runner').offsetWidth / 2; }
 function pose(name) { $('sprite').className = `sprite pose-${name}`; }
 function move(x, y = 0) {
   position = x;
@@ -38,6 +52,7 @@ $('start').addEventListener('click', () => {
   });
   $('intro').hidden = true;
   $('scene').hidden = false;
+  layoutWorld();
   $('runner').classList.add('running');
   $('scene').classList.add('entering');
   startTime = performance.now();
@@ -58,7 +73,7 @@ function run(now) {
     $('runner').classList.remove('running');
     move(targetX());
     pose('land');
-    $('hint').textContent = 'Ci sei! Premi JUMP.';
+    $('hint').textContent = 'Il regalo è lì. Premi JUMP!';
   }
 }
 
@@ -79,7 +94,9 @@ function jump() {
   const from = position, began = performance.now();
   // Match the arc to the underside of the block at every viewport height.
   const blockBottom = parseFloat(getComputedStyle($('block')).bottom);
-  const height = blockBottom - 36 - 118 + 9;
+  const runner = $('runner');
+  const ground = parseFloat(getComputedStyle(runner).bottom);
+  const height = Math.max(0, Math.min(blockBottom - ground - runner.offsetHeight + 9, $('world').clientHeight - ground - runner.offsetHeight - 16));
   function frame(now) {
     const t = Math.min((now - began) / 740, 1);
     move(from + (targetX() - from) * Math.min(t * 2.5, 1), 4 * height * t * (1 - t));
@@ -115,7 +132,7 @@ function hitBlock() {
       $('gift-title').focus({ preventScroll: true });
     }, 300);
     setTimeout(() => $('reveal-wipe').classList.remove('active'), 1000);
-  }, 680);
+  }, 850);
 }
 
 $('jump').addEventListener('click', requestJump);
@@ -141,12 +158,16 @@ document.querySelectorAll('button').forEach(button => {
   });
 });
 window.addEventListener('resize', () => {
+  layoutWorld();
   if (started && !jumping && !hit && performance.now() - startTime >= 2000) move(targetX());
 });
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) music.pause();
   else if (started && !hit && !muted) music.play().catch(() => {});
 });
+
+new ResizeObserver(layoutWorld).observe($('world'));
+$('close-complete').addEventListener('click', () => $('complete').close());
 
 let submitting = false;
 $('gift-form').addEventListener('submit', async event => {
@@ -168,8 +189,8 @@ $('gift-form').addEventListener('submit', async event => {
     });
     if (!response.ok) throw new Error('Invio non riuscito');
     $('form-section').hidden = true;
-    $('complete').hidden = false;
-    $('complete').focus({ preventScroll: true });
+    status.textContent = '';
+    $('complete').showModal();
   } catch {
     status.textContent = 'Qualcosa non ha funzionato. Riprova.';
   } finally {

@@ -68,3 +68,32 @@ button.pressed{animation:button-press .36s ease-out!important}
 .intro-mario{width:250px}
 @media(min-width:600px){.intro-mario{width:270px}}
 @media(max-height:730px){.intro-mario{width:170px}}
+/* Fit the complete animation inside the mobile scene. */
+.intro-copy h1{font-size:clamp(38px,10.5vw,64px);letter-spacing:-2px;line-height:1.02;max-width:600px}
+.scene-copy h2{font-size:clamp(34px,9.4vw,54px)}
+.scene .world{min-height:0;--actor-scale:1;--block-bottom:180px;--coin-bottom:238px;--coin-rise:40px;--sparkles-bottom:238px}
+.scene header,.scene-copy,.controls,.keyboard{flex-shrink:0}
+.world .block{bottom:var(--block-bottom);width:calc(58px * var(--actor-scale));height:calc(58px * var(--actor-scale));font-size:calc(42px * var(--actor-scale))}
+.world .block:before,.world .block:after{box-shadow:calc(39px * var(--actor-scale)) 0 #85501f,0 calc(39px * var(--actor-scale)) #85501f,calc(39px * var(--actor-scale)) calc(39px * var(--actor-scale)) #85501f}
+.world .coin{bottom:var(--coin-bottom);width:calc(25px * var(--actor-scale));height:calc(34px * var(--actor-scale))}
+.world .coin:after{left:40%;top:18%;height:60%;width:2px}
+.world .runner{bottom:calc(36px * var(--actor-scale));width:calc(100px * var(--actor-scale));height:calc(118px * var(--actor-scale))}
+.world .runner .sprite{position:absolute;bottom:0;left:0;transform:scale(var(--actor-scale));transform-origin:bottom left}
+.world .runner.landing .sprite{animation:land .24s ease-out}
+.world .ground{height:calc(36px * var(--actor-scale))}
+.world .hill{bottom:calc(35px * var(--actor-scale))}
+.world .sparkles{bottom:var(--sparkles-bottom);font-size:calc(27px * var(--actor-scale));letter-spacing:calc(10px * var(--actor-scale));line-height:1.2}
+.world .sparkles span{font-size:calc(38px * var(--actor-scale))}
+.coin.pop,.sparkles.on{animation-duration:.85s}
+@keyframes coin-pop{0%{opacity:1;transform:translate(-50%,0) rotateY(0)}45%,65%{opacity:1;transform:translate(-50%,calc(-1 * var(--coin-rise))) rotateY(360deg)}85%{opacity:1;transform:translate(-50%,calc(-.8 * var(--coin-rise))) rotateY(540deg)}100%{opacity:0;transform:translate(-50%,calc(-1 * var(--coin-rise))) rotateY(720deg)}}
+@keyframes sparkle{30%,65%{opacity:1}100%{opacity:0;transform:translate(-50%,-8px) scale(1.1)}}
+.complete{width:min(calc(100% - 40px),440px);max-height:calc(100svh - 40px);padding:40px 26px 26px;background:var(--paper);color:var(--ink);border:1px solid var(--ink);border-radius:12px;box-shadow:5px 6px 0 #23282130;overflow:auto}
+.complete::backdrop{background:#23282190;backdrop-filter:blur(4px)}
+.complete .modal-close{position:absolute;top:10px;right:10px;width:32px;height:32px}
+.complete .eyebrow{margin:12px 0 18px;color:var(--red)}
+.complete h3{font-size:28px;margin-top:0}
+.complete-farewell{font-weight:700;margin-bottom:0}
+@media(max-height:730px){.intro-copy h1{font-size:clamp(32px,9.5vw,46px)}.scene-copy h2{font-size:clamp(28px,8.4vw,38px)}.scene-copy{margin-top:14px}.scene-copy .eyebrow{margin-bottom:8px}.scene-copy h2{margin-bottom:10px}}
+@media(max-height:600px){.scene header{padding-bottom:8px}.scene .sound{width:32px;height:32px}.scene-copy{margin-top:10px}.scene-copy h2{font-size:28px}.scene .controls{padding-top:10px}.scene .jump{height:56px}.scene .keyboard{margin-top:10px}}
+
+@keyframes land{0%{transform:scale(calc(1.07 * var(--actor-scale)),calc(.91 * var(--actor-scale)))}60%{transform:scale(calc(.98 * var(--actor-scale)),calc(1.025 * var(--actor-scale)))}100%{transform:scale(var(--actor-scale))}}
