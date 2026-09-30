@@ -9,6 +9,7 @@ music.volume = 0.12;
 effects.forEach(audio => { audio.volume = 0.65; });
 let started = false, jumping = false, hit = false, muted = false;
 let startTime = 0, position = 0, queuedJump = false;
+let musicStarted = false;
 
 function play(audio) {
   if (muted) return;
@@ -30,6 +31,16 @@ function layoutWorld() {
   world.style.setProperty('--coin-rise', `${coinRise}px`);
   world.style.setProperty('--sparkles-bottom', `${Math.min(coinBottom, world.clientHeight - 70 * scale - 16)}px`);
 }
+// Keep one continuous music track across intro, game, gift and confirmation.
+function startMusic() {
+  if (muted || document.hidden) return;
+  music.play().then(() => { musicStarted = true; }).catch(() => {});
+}
+// Autoplay may be blocked; the first touch/key unlocks it without resetting it.
+startMusic();
+document.addEventListener('pointerdown', startMusic, { once: true });
+document.addEventListener('keydown', startMusic, { once: true });
+
 function targetX() { return $('world').clientWidth * 0.65 - $('runner').offsetWidth / 2; }
 function pose(name) {
   const next = `sprite pose-${name}`;
@@ -43,7 +54,7 @@ function move(x, y = 0) {
 $('start').addEventListener('click', () => {
   if (started) return;
   started = true;
-  play(music);
+  startMusic();
   play(buttonAudio);
   // Unlock each supplied sound in the user's START gesture, including on iOS.
   effects.forEach(audio => {
@@ -131,7 +142,6 @@ function hitBlock() {
     $('scene').classList.add('leaving');
     // The star fills the screen before revealing the gift underneath.
     setTimeout(() => {
-      music.pause();
       $('scene').hidden = true;
       $('gift').hidden = false;
       document.body.classList.add('revealed');
@@ -151,6 +161,7 @@ document.addEventListener('keydown', event => {
 $('mute').addEventListener('click', () => {
   muted = !muted;
   [music, ...effects, buttonAudio].forEach(audio => { audio.muted = muted; });
+  if (!muted) startMusic();
   $('mute').textContent = muted ? '×' : '♫';
   $('mute').setAttribute('aria-label', muted ? 'Attiva audio' : 'Disattiva audio');
   $('mute').setAttribute('aria-pressed', String(muted));
@@ -170,7 +181,7 @@ window.addEventListener('resize', () => {
 });
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) music.pause();
-  else if (started && !hit && !muted) music.play().catch(() => {});
+  else if (musicStarted || started) startMusic();
 });
 
 new ResizeObserver(layoutWorld).observe($('world'));
